@@ -1,7 +1,7 @@
 package com.vickyrahadian.expensestrackerapi.services;
 
 import com.vickyrahadian.expensestrackerapi.domain.User;
-import com.vickyrahadian.expensestrackerapi.exception.EtAuthException;
+import com.vickyrahadian.expensestrackerapi.exceptions.EtAuthException;
 
 public interface UserService {
     User validateUser(String email, String password) throws EtAuthException;

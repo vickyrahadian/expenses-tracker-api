@@ -1,4 +1,4 @@
-package com.vickyrahadian.expensestrackerapi;
+package com.vickyrahadian.expensestrackerapi.utils;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

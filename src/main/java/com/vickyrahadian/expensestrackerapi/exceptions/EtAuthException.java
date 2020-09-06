@@ -1,4 +1,4 @@
-package com.vickyrahadian.expensestrackerapi.exception;
+package com.vickyrahadian.expensestrackerapi.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
