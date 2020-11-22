@@ -13,7 +13,6 @@ import java.util.List;
 @Service
 @Transactional
 public class CategoryServiceImpl implements CategoryService{
-
     @Autowired
     CategoryRepository categoryRepository;
 
@@ -28,8 +27,8 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public Category addCategory(Integer userId, String title, String desc) throws EtBadRequestException {
-        int categoryId = categoryRepository.create(userId, title, desc);
+    public Category addCategory(Integer userId, String title, String description) throws EtBadRequestException {
+        int categoryId = categoryRepository.create(userId, title, description);
         return categoryRepository.findById(userId, categoryId);
     }
 
@@ -40,6 +39,7 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public void removeCategoryWithAllTransactions(Integer userId, Integer categoryId) throws EtResourceNotFoundException {
-
+        this.fetchCategoryById(userId, categoryId);
+        categoryRepository.removeById(userId, categoryId);
     }
 }

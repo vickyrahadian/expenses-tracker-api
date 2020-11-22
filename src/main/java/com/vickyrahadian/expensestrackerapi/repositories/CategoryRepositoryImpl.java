@@ -36,23 +36,28 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     private static final String SQL_UPDATE = "UPDATE ET_CATEGORIES SET TITLE = ?, DESCRIPTION = ? " +
             "WHERE USER_ID = ? AND CATEGORY_ID = ?";
 
+
+    private static final String SQL_DELETE_CATEGORY = "DELETE FROM ET_CATEGORIES WHERE USER_ID = ? AND CATEGORY_ID = ?";
+
+    private static final String SQL_DELETE_ALL_TRANSACTIONS = "DELETE FROM ET_TRANSACTIONS WHERE CATEGORY_ID = ?";
+
     @Autowired
     JdbcTemplate jdbcTemplate;
 
     @Override
     public List<Category> findAll(Integer userId) throws EtResourceNotFoundException {
-        try{
+        try {
             return jdbcTemplate.query(SQL_FIND_ALL, new Object[]{userId}, categoryRowMapper);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new EtResourceNotFoundException("Category not found");
         }
     }
 
     @Override
     public Category findById(Integer userId, Integer categoryId) throws EtResourceNotFoundException {
-        try{
+        try {
             return jdbcTemplate.queryForObject(SQL_FIND_BY_ID, new Object[]{userId, categoryId}, categoryRowMapper);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new EtResourceNotFoundException("Category not found");
         }
     }
@@ -69,7 +74,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
                 return ps;
             }, keyHolder);
             return (Integer) keyHolder.getKeys().get("CATEGORY_ID");
-         } catch (Exception e){
+        } catch (Exception e) {
             throw new EtBadRequestException("Invalid request");
         }
     }
@@ -78,21 +83,26 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     public void update(Integer userId, Integer categoryId, Category category) throws EtBadRequestException {
         try {
             jdbcTemplate.update(SQL_UPDATE, category.getTitle(), category.getDescription(), userId, categoryId);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new EtBadRequestException("Invalid request");
         }
     }
 
     @Override
     public void removeById(Integer userId, Integer categoryId) {
+        this.removeAllCatTransactions(categoryId);
+        jdbcTemplate.update(SQL_DELETE_CATEGORY, new Object[]{userId, categoryId});
+    }
 
+    private void removeAllCatTransactions(Integer categoryId) {
+        jdbcTemplate.update(SQL_DELETE_ALL_TRANSACTIONS, new Object[]{categoryId});
     }
 
     private RowMapper<Category> categoryRowMapper = ((rs, rowNum) -> new Category(
-      rs.getInt("CATEGORY_ID"),
-      rs.getInt("USER_ID"),
-      rs.getString("TITLE"),
-      rs.getString("DESCRIPTION"),
-      rs.getDouble("TOTAL_EXPENSE")
+            rs.getInt("CATEGORY_ID"),
+            rs.getInt("USER_ID"),
+            rs.getString("TITLE"),
+            rs.getString("DESCRIPTION"),
+            rs.getDouble("TOTAL_EXPENSE")
     ));
 }

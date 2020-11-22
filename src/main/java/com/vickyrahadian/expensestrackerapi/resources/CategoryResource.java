@@ -20,14 +20,14 @@ public class CategoryResource {
     CategoryService categoryService;
 
     @GetMapping("")
-    public ResponseEntity<List<Category>> getAllCategories(HttpServletRequest request){
+    public ResponseEntity<List<Category>> getAllCategories(HttpServletRequest request) {
         Integer userId = (Integer) request.getAttribute("userId");
         List<Category> category = categoryService.fetchAllCategories(userId);
         return new ResponseEntity<>(category, HttpStatus.OK);
     }
 
     @GetMapping("/{categoryId}")
-    public ResponseEntity<Category> getCategoryById(HttpServletRequest request, @PathVariable("categoryId") Integer categoryId){
+    public ResponseEntity<Category> getCategoryById(HttpServletRequest request, @PathVariable("categoryId") Integer categoryId) {
         Integer userId = (Integer) request.getAttribute("userId");
         Category category = categoryService.fetchCategoryById(userId, categoryId);
         return new ResponseEntity<>(category, HttpStatus.OK);
@@ -44,11 +44,20 @@ public class CategoryResource {
 
 
     @PostMapping("")
-    public ResponseEntity<Category> addCategory(HttpServletRequest httpServletRequest, @RequestBody Map<String, Object> categoryMap){
+    public ResponseEntity<Category> addCategory(HttpServletRequest httpServletRequest, @RequestBody Map<String, Object> categoryMap) {
         Integer userId = (Integer) httpServletRequest.getAttribute("userId");
         String title = (String) categoryMap.get("title");
         String description = (String) categoryMap.get("description");
         Category category = categoryService.addCategory(userId, title, description);
         return new ResponseEntity<>(category, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{categoryId}")
+    public ResponseEntity<Map<String, Boolean>> deleteCategory(HttpServletRequest request, @PathVariable("categoryId") Integer categoryId) {
+        int userId = (Integer) request.getAttribute("userId");
+        categoryService.removeCategoryWithAllTransactions(userId, categoryId);
+        Map<String, Boolean> map = new HashMap<>();
+        map.put("success", true);
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 }
