@@ -2,7 +2,7 @@
 --drop user expensetracker
 create user expensetracker with password 'password';
 create database expensestrackerdb with template=template0 owner=expensetracker;
-\connect expensetrackerdb
+connect expensetrackerdb
 alter default privileges grant all on tables to expensetracker;
 alter default privileges grant all on sequences to expensetracker;
 
